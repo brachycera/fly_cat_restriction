@@ -227,8 +227,10 @@ class fw_cat_restrictionClass {
 
 			$restriction = json_encode( $filterItem );
 
-			return $restriction;
-		}
+		} else
+			$restriction = "[{}]";
+
+		return $restriction;
 
 
 	}
@@ -268,7 +270,7 @@ class fw_cat_restrictionClass {
 
 						tr(
 							tda(
-								'<p>' . fInput( 'submit', 'save', 'Save disabled categories', 'publish'  ) . '</p>' .
+								'<p>' . fInput( 'submit', 'save', 'Save Categories', 'publish'  ) . '</p>' .
 								sInput( 'save' ) .
 								eInput( 'fw_cat_restriction' ),
 								' style="text-align:center"'
