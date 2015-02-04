@@ -1,0 +1,31 @@
+# Name: fw_cat_restriction v1.0 
+# Type: Admin side plugin
+# Restrict Article Categories for Sections in Write Panel
+# Author: Superfly
+# URL: http://www.flyweb.at
+# Recommended load order: 5
+
+# .....................................................................
+# This is a plugin for Textpattern CMS - http://textpattern.com/
+# To install: textpattern > admin > plugins
+# Paste the following text into the 'Install plugin' box:
+# .....................................................................
+
+YToxMTp7czo0OiJuYW1lIjtzOjE4OiJmd19jYXRfcmVzdHJpY3Rpb24iO3M6NjoiYXV0aG9y
+IjtzOjg6IlN1cGVyZmx5IjtzOjEwOiJhdXRob3JfdXJpIjtzOjIwOiJodHRwOi8vd3d3LmZs
+eXdlYi5hdCI7czo3OiJ2ZXJzaW9uIjtzOjM6IjEuMCI7czoxMToiZGVzY3JpcHRpb24iO3M6
+NTU6IlJlc3RyaWN0IEFydGljbGUgQ2F0ZWdvcmllcyBmb3IgU2VjdGlvbnMgaW4gV3JpdGUg
+UGFuZWwiO3M6NDoiY29kZSI7czo3NToiaW5jbHVkZSgnL3VzZXJzL3N1cGVyZmx5L3NpdGVz
+L3RpcC1vbmxpbmUvX2luY2x1ZGUvdHhwUGx1Z2luVGVzdC5pbmMucGhwJyk7IjtzOjQ6InR5
+cGUiO3M6MToiMyI7czo1OiJvcmRlciI7czoxOiI1IjtzOjU6ImZsYWdzIjtzOjE6IjMiO3M6
+NDoiaGVscCI7czo1MjI6IjxoMT5DYXRlZ29yeSBSZXN0cmljdGlvbnM8L2gxPgo8cD5XaXRo
+IHRoaXMgUGx1Z2luIHlvdSBjYW4gcmVzdHJpY3QgQXJ0aWNsZS1DYXRlZ29yaWVzIGZyb20g
+c3BlY2lmaWMgc2VjdGlvbnMgaW4gdGhlIFdyaXRlIFBhbmVscyBDYXRlZ29yaWVzIERyb3Bk
+b3ducy48L3A+CjxoMj5JbnN0YWxsYXRpb248L2gyPgo8cD5BZnRlciBpbnN0YWxsaW5nIHRo
+ZSBQbHVnaW4geW91IGNhbiBmaW5kIHRoZSBTZXR0aW5ncyBQYWdlICJDYXRlZ29yeSBSZXN0
+cmljdGlvbnMiIHVuZGVyIHRoZSBFeHRlbnNpb25zIFRhYi48L3A+CjxoMj5DaGFuZ2Vsb2c8
+L2gyPgo8cD48c3Ryb25nPlZlcnNpb24gMS4wPC9zdHJvbmc+IEluaXRpYWwgcmVsZWFzZSAt
+ICAwMy4gRmViLiAyMDE1PC9wPgo8YnI+PGJyPjxicj48YnI+PGJyPjxocj48cCBhbGlnbj0i
+Y2VudGVyIj48c21hbGw+VGhpcyBQbHVnaW4gd2FzIG1hZGUgYnkgPGEgaHJlZj0iaHR0cDov
+L3d3dy5mbHl3ZWIuYXQiPiBmbHl3ZWIgUHJvZHVjdGlvbnM8L2E+Ljwvc21hbGw+PC9wPiI7
+czozOiJtZDUiO3M6MzI6IjBjNTRkMWU0ZmIwNzljZWY3ZmEzYjVlNGI2ZTdiOThmIjt9
