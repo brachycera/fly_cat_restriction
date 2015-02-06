@@ -3,7 +3,7 @@
  *
  * Textpattern CMS Plugin <www.textpattern.com>
  *
- * fw_cat_restriction.php
+ * fly_cat_restriction.php
  * Flyweb Categories Restriction Plugin
  *
  * This Plugin is for the CMS Write Panel. It can deactivate Category
@@ -12,57 +12,61 @@
  * @author flyweb productions <www.flyweb.at>
  * @copyright 2015 flyweb productions
  * @license http://opensource.org/licenses/MIT - MIT License (MIT)
- * @version 1.0
+ * @version 1.1 <https://github.com/brachycera/fw_cat_restriction>
  *
  */
 
 if (txpinterface === 'admin') {
 
-	add_privs('fw_cat_restriction','1');
-	add_privs('plugin_prefs.fw_cat_restriction', '1');
+	add_privs('fly_cat_restriction','1');
+	add_privs('plugin_prefs.fly_cat_restriction', '1');
 
-	register_tab("extensions", "fw_cat_restriction", 'Category Restrictions');
+	register_tab("extensions", "fly_cat_restriction", 'Category Restrictions');
 
-	register_callback('fw_cat_restriction', 'plugin_lifecycle.fw_cat_restriction', 'installed');
-	register_callback('fw_cat_restriction', 'plugin_lifecycle.fw_cat_restriction', 'deleted');
-	register_callback('fw_cat_restriction', 'plugin_prefs.fw_cat_restriction');
-	register_callback('fw_cat_restriction', 'article_ui','sort_display');
-	register_callback('fw_cat_restriction', 'fw_cat_restriction');
+	register_callback('fly_cat_restriction', 'plugin_lifecycle.fly_cat_restriction', 'installed');
+	register_callback('fly_cat_restriction', 'plugin_lifecycle.fly_cat_restriction', 'deleted');
+	register_callback('fly_cat_restriction', 'plugin_prefs.fly_cat_restriction');
+	register_callback('fly_cat_restriction', 'article_ui','sort_display');
+	register_callback('fly_cat_restriction', 'fly_cat_restriction');
 
 }
 
 /**
  *
- * fw_cat_restriction - Plugin Factory Function
+ * fly_cat_restriction - Plugin Factory Function
  *
  * @param  string $event - Textpattern Event Callback Parameter
  * @param  string $step - Textpattern Step Callback Parameter
  *
  */
-function fw_cat_restriction($event, $step){
+function fly_cat_restriction($event, $step){
 
-	$fw_cat_restriction =  new fw_cat_restrictionClass();
+	$fly_cat_restriction =  new fly_cat_restrictionClass();
 
 	switch ($step) {
 
 		case 'installed':
-			$fw_cat_restriction->install();
+			$fly_cat_restriction->install();
 			break;
 
 		case 'deleted':
-			$fw_cat_restriction->uninstall();
+			$fly_cat_restriction->uninstall();
 			break;
 
 		case 'save':
-			$fw_cat_restriction->adminpage();
+			$fly_cat_restriction->adminpage();
+			break;
+
+		case 'savePref':
+			$fly_cat_restriction->savePref();
 			break;
 
 		case 'sort_display':
-			$fw_cat_restriction->javascript();
+			$fly_cat_restriction->javascript();
 			break;
 
 		default:
-			$fw_cat_restriction->adminpage();
+			$fly_cat_restriction->adminpage();
 			break;
 
 	}
@@ -74,7 +78,7 @@ function fw_cat_restriction($event, $step){
 
 /**
  *
- * fw_cat_restrictionClass
+ * fly_cat_restrictionClass
  *
  * This Plugin adds the ability to restrict Categories from specific Sections in the Write Tab
  *
@@ -84,7 +88,7 @@ function fw_cat_restriction($event, $step){
  * @project Textpattern Admin Plugin
  *
  */
-class fw_cat_restrictionClass {
+class fly_cat_restrictionClass {
 
 
 	/**
@@ -103,12 +107,12 @@ class fw_cat_restrictionClass {
 
 	/**
 	 *
-	 * Install Database Table txp_fw_cat_restriction
+	 * Install Database Table txp_fly_cat_restriction
 	 *
 	 */
 	function install() {
 
-		if (!getThings("Show tables like '" . PFX . "txp_fw_cat_restriction'")) {
+		if (!getThings("Show tables like '" . PFX . "txp_fly_cat_restriction'")) {
 
 			//figure out what MySQL version we are using (from _update.php)
 			$mysqlversion = mysql_get_server_info();
@@ -120,8 +124,8 @@ class fw_cat_restrictionClass {
 			if ( isset($txpcfg['dbcharset']) && (intval($mysqlversion[0]) >= 5 || preg_match('#^4\.[1-9]#', $mysqlversion)))
 				$tabletype .= " CHARACTER SET = ". $txpcfg['dbcharset'] ." ";
 
-			// Create the txp_fw_cat_restrictions table
-			$fw_cat_restrictionsTable = safe_query("CREATE TABLE `" . PFX . "txp_fw_cat_restriction` (
+			// Create the txp_fly_cat_restrictions table
+			$fly_cat_restrictionsTable = safe_query("CREATE TABLE `" . PFX . "txp_fly_cat_restriction` (
 					`id` int(11) NOT NULL AUTO_INCREMENT,
 					`section` VARCHAR(128) NOT NULL,
 					`category` VARCHAR(64) NOT NULL,
@@ -136,20 +140,25 @@ class fw_cat_restrictionClass {
 
 	/**
 	 *
-	 * uninstall - Uninstall Database Table txp_fw_cat_restriction
+	 * uninstall - Uninstall Database Table txp_fly_cat_restriction
 	 *
 	 */
 	function uninstall() {
 
-		if (getThings("Show tables like '" . PFX . "txp_fw_cat_restriction'")) {
+		if ( getThings("Show tables like '" . PFX . "txp_fly_cat_restriction'") ) {
 
-			$sql = "DROP TABLE IF EXISTS " .PFX . "txp_fw_cat_restriction; ";
+			$sql = "DROP TABLE IF EXISTS " . PFX . "txp_fly_cat_restriction;";
 
-			$drop = safe_query($sql);
+			$dropTable = safe_query($sql);
 
 		}
 
+		$sqlPref = "DELETE FROM  " . PFX . "txp_prefs WHERE name='fly_restrict_cat_pref';";
+		$deletePref = safe_query($sqlPref);
+
+
 	}
+
 
 	/**
 	 *
@@ -182,14 +191,14 @@ class fw_cat_restrictionClass {
 			if ( !empty($sqlDelCat) )
 				$sqlDelCat = 'AND (' . trim($sqlDelCat, 'AND ') . ')';
 
-			$sqlDel = "DELETE FROM " . PFX . "txp_fw_cat_restriction WHERE section='" . $section . "'" . $sqlDelCat;
+			$sqlDel = "DELETE FROM " . PFX . "txp_fly_cat_restriction WHERE section='" . $section . "'" . $sqlDelCat;
 			$delete = safe_query($sqlDel);
 
 
 			$sqlCat = trim($sqlCat, ', ');
 			if ( !empty($sqlCat) ){
 
-				$sql = "INSERT INTO " . PFX . "txp_fw_cat_restriction VALUES " . $sqlCat;
+				$sql = "INSERT INTO " . PFX . "txp_fly_cat_restriction VALUES " . $sqlCat;
 				$insert = safe_query($sql);
 
 			}
@@ -201,6 +210,33 @@ class fw_cat_restrictionClass {
 
 	}
 
+
+	/**
+	 *
+	 * savePref - Save setting to show/hide restricted Categories in Write Panel
+	 *
+	 * @param string $_POST['fly_restrict_cat_pref']
+	 * @uses lib/txplib_theme.php - announce_async()
+	 * @return string - Admin Theme Javascript Notification message
+	 *
+	 */
+	function savePref(){
+
+		if ( gps('fly_restrict_cat_pref') == 'true' ){
+
+			set_pref('fly_restrict_cat_pref', true, 'fly_cat_restriction');
+			echo $this->theme->announce_async( 'Restricted Categories are hidden' );
+
+		} else {
+
+			set_pref('fly_restrict_cat_pref', false, 'fly_cat_restriction');
+			echo $this->theme->announce_async( 'Restricted Categories are shown');
+
+		}
+
+	}
+
+
 	/**
 	 *
 	 * Loads all restrictet Catgories from the database and converts the result to JSON
@@ -210,13 +246,13 @@ class fw_cat_restrictionClass {
 	 */
 	function restrictions_JSON() {
 
-		$sql = "SELECT * FROM " . PFX . "txp_fw_cat_restriction ORDER BY section DESC";
+		$sql = "SELECT * FROM " . PFX . "txp_fly_cat_restriction ORDER BY section DESC";
 
 		$result = getRows($sql);
 
 		if ( $result == true ){
 
-			$i=1; // NTMS: we cant use the array key, because json_encode() makes an array with key '0', and not an object
+			$i=1; // NTMS: we cant use the array key. json_encode() would make an JS-array from array key '0', and not the desired JS-object
 			foreach ($result as $item) {
 
 				$filterItem[ $item['section'] ][$i]['name'] = $item['category'];
@@ -255,7 +291,18 @@ class fw_cat_restrictionClass {
 		echo '<div class="text-column">' . "\n";
 
 			echo '<h1>Category Restrictions</h1>' . "\n";
-			echo '<p>This plugin only works with Article-Categories. Only parent categories can be disabled. Sub-categories get automatically disabled if Parent-Category is disabled.</p><br/>' . "\n";
+			echo '<p>This plugin only works with Article-Categories. Only parent categories can be disabled. Sub-categories get automatically disabled if Parent-Category is disabled.</p>' . "\n";
+
+			echo '<div>' . form(
+
+				'<label for="save_pref">' .
+				checkbox('fly_restrict_cat_pref', '" onchange="savePref(this); ', 0, null, 'save_pref') .
+				'Hide restricted Categories in Dropdown Menu on Write Panel</label>'
+
+			) . "\n";
+
+			echo '</div><br/>' . "\n";
+
 			echo '<style type="text/css">label {display:block; cursor:pointer;}</style>' . "\n";
 
 			echo form(
@@ -272,7 +319,7 @@ class fw_cat_restrictionClass {
 							tda(
 								'<p>' . fInput( 'submit', 'save', 'Save Categories', 'publish'  ) . '</p>' .
 								sInput( 'save' ) .
-								eInput( 'fw_cat_restriction' ),
+								eInput( 'fly_cat_restriction' ),
 								' style="text-align:center"'
 							)
 						) .
@@ -291,7 +338,7 @@ class fw_cat_restrictionClass {
 
 		echo $this->javascript('checkbox');
 
-		echo '<br><p align="center"><small>This Plugin was made by ' . href('flyweb Productions', 'http://www.flyweb.at') . '.</small></p>' . "\n";
+		echo '<br/><p align="center"><small>This Plugin was made by ' . href('flyweb Productions', 'http://www.flyweb.at') . '.</small></p>' . "\n";
 
 		if (!empty($saveMsg))
 			echo $saveMsg;
@@ -376,14 +423,19 @@ class fw_cat_restrictionClass {
 	 *
 	 * @param  string $element - Set JS-Function for "dropdown" (Write Panel) or "checkbox" (Admin Page)
 	 * @uses jQuery
-	 * @return string $js - Javascript
+	 * @return string $html
 	 *
 	 */
 	function javascript($element='dropdown') {
 
 		$JSON = $this->restrictions_JSON();
 
-		$js = "<script type=\"text/javascript\">
+		$class = ( get_pref('fly_restrict_cat_pref') ? 'restrictedHidden' : 'restricted' );
+
+
+		$html = '<style type="text/css"> .restricted {background-color: red; color: white; } .restrictedHidden { display:none; }</style>' . "\n";
+
+		$html .= "<script type=\"text/javascript\">
 
 			jQuery(function() {
 
@@ -441,30 +493,46 @@ class fw_cat_restrictionClass {
 				function fw_cat_dropdown(catObj) {
 
 					$(\"select[name='Category1'] option:gt(0), select[name='Category2'] option:gt(0)\").attr('disabled', false);
-					$(\"select[name='Category1'] option:gt(0), select[name='Category2'] option:gt(0)\").css({ 'background-color': 'white', 'color': 'black'});
+					$(\"select[name='Category1'] option:gt(0), select[name='Category2'] option:gt(0)\").removeClass('$class');
 
 					Object.keys(catObj).forEach(function (key) {
 
 					    var val = catObj[key];
 
-						$(\"option[value='\" + val.name + \"']\").attr('disabled', 'disabled');
-						$(\"option[value='\" + val.name + \"']\").attr('selected', false);
-						$(\"option[value='\" + val.name + \"']\").nextUntil( $(\" option:not(:contains('\u00a0')) \") ).attr('disabled', 'disabled');
-						$(\"option[value='\" + val.name + \"']\").css({ 'background-color': 'red', 'color': 'white'});
-						$(\"option[value='\" + val.name + \"']\").nextUntil( $(\" option:not(:contains('\u00a0')) \") ).css({backgroundColor: 'red', color: 'white'});
+						$(\"#categories_group option[value='\" + val.name + \"']\").attr('disabled', 'disabled');
+						$(\"#categories_group option[value='\" + val.name + \"']\").attr('selected', false);
+						$(\"#categories_group option[value='\" + val.name + \"']\").nextUntil( $(\" option:not(:contains('\u00a0')) \") ).attr('disabled', 'disabled');
+						$(\"#categories_group option[value='\" + val.name + \"']\").addClass('$class');
+						$(\"#categories_group option[value='\" + val.name + \"']\").nextUntil( $(\" option:not(:contains('\u00a0')) \") ).addClass('$class');
 
 					});
 
 				};
 
-			});</script>";
+			});
 
-		echo $js;
+			function savePref(pref){
+
+				sendAsyncEvent(
+
+					{
+						event: textpattern.event,
+						step: 'savePref',
+						fly_restrict_cat_pref: pref.checked
+
+					}, null, 'script'
+
+				);
+			};
+
+		</script>";
+
+		echo $html;
 
 	}
 
 
 
-} // class fw_cat_restrictionsClass() END
+} // class fly_cat_restrictionsClass() END
 
 ?>
