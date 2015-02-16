@@ -560,6 +560,14 @@ if (0) {
 <p>After installing the Plugin you can find the Settings Page "Category Restrictions" under the Extensions Tab.</p>
 <h2>Changelog</h2>
 <p><strong>Version 1.0</strong> Initial release -  03. Feb. 2015</p>
+<p><strong>Version 1.1</strong> 06. Feb. 2015
+<ul>
+	<li>Changed plugin name from fw_cat_restrictions to fly_cat_restrictions to follow TXP plugin guidelines</li>
+	<li>Bugfix for Dropdown if section and category names were equal</li>
+	<li>Added Feature Request to show/hide restricted Categories on Write Tab. Set via checkbox on Plugin Setting page</li>
+	<li>Added CSS-Classes .restricted and .restrictedHidden for Option Tag in Dropdown on Write Tab</li>
+</ul>
+</p>
 <br><br><br><br><br><hr><p align="center"><small>This Plugin was made by <a href="http://www.flyweb.at"> flyweb Productions</a>.</small></p>
 # --- END PLUGIN HELP ---
 -->
